@@ -12,18 +12,28 @@ const Camera = () => {
     // console.log('imgSrc', imgSrc);
     const capture = React.useCallback(() => {
       const imageSrc = webcamRef.current.getScreenshot();
-      setImgSrc(imageSrc);
-      saveImage(imageSrc);
+      if (imageSrc.startsWith("data:image/jpeg;base64,")) {
+        const imageBase64 = imageSrc.split(",")[1]; // convert the image to base64 (format for transmitting img in network)
+        setImgSrc(imageSrc);
+        saveImage(imageBase64);
+        console.log('worked');
+      } else {
+        console.log('not worked');
+      }
     }, [webcamRef, setImgSrc]);
 
-      const saveImage = async (imgSrc) => {
+
+      // post image to server
+      const saveImage = async (imageBase64) => {
         try {
           const response = await fetch("http://localhost:3020/api/upload", {
             method: "POST",
-            body: JSON.stringify({ image: imgSrc }),
+            // body: JSON.stringify({ image: imgSrc }),
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "text/plain",
+              "Content-Length": imageBase64.length.toString(),
             },
+            body: imageBase64
         });
         console.log('response', response);
 
