@@ -1,2 +1,3 @@
-./server/node_modules
-./camera/node_modules
+/server/node_modules
+/server/images
+/camera/node_modules
